@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AI Travel Companion</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        #chatbox { width: 300px; height: 400px; border: 1px solid #ccc; padding: 10px; overflow-y: scroll; }
+        #input { width: 300px; }
+    </style>
+</head>
+<body>
+    <h1>AI Travel Companion</h1>
+    <div id="chatbox"></div>
+    <input type="text" id="input" placeholder="Type your message..." />
+    <button onclick="sendMessage()">Send</button>
+
+    <script>
+        function sendMessage() {
+            var message = document.getElementById('input').value;
+            document.getElementById('chatbox').innerHTML += '<p>You: ' + message + '</p>';
+            
+            fetch('/webhook', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ message: message })
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('chatbox').innerHTML += '<p>Bot: ' + data.text + '</p>';
+                document.getElementById('input').value = '';
+            });
+        }
+    </script>
+</body>
+</html>
