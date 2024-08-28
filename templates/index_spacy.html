@@ -3,76 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Travel Companion</title>
-    <!-- Link to the CSS file in the Flask static directory -->
+    <title>Travel Chatbot</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles_spacy.css') }}">
-    <!-- Google Fonts link for fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700&family=Indie+Flower&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="container">
-        <header>
-            <div class="logo">AI Travel Companion</div>
-            <div class="social-media">
-                <a href="https://facebook.com" target="_blank">Facebook</a>
-                <a href="https://twitter.com" target="_blank">Twitter</a>
-                <a href="https://instagram.com" target="_blank">Instagram</a>
+        <div class="chatbox">
+            <div class="chatbox-header">
+                <h1>Travel Chatbot</h1>
+                <div class="social-links">
+                    <a href="https://twitter.com" target="_blank">Twitter</a>
+                    <a href="https://facebook.com" target="_blank">Facebook</a>
+                </div>
             </div>
-        </header>
-
-        <div class="image-container">
-            <!-- Image placed in the foreground, top center -->
-            <img src="https://picsum.photos/536/354" alt="Travel Image">
-        </div>
-
-        <div class="chatbot-container">
-            <div id="chatbot">
-                <div id="chatbox"></div>
-                <input type="text" id="userInput" placeholder="Type your message here..." onkeydown="if(event.key === 'Enter'){sendMessage();}">
+            <div class="chatbox-body" id="chatboxBody">
+                <div id="messages"></div>
+            </div>
+            <div class="chatbox-footer">
+                <textarea id="userInput" placeholder="Type your message..."></textarea>
                 <button onclick="sendMessage()">Send</button>
             </div>
         </div>
     </div>
-
     <script>
-        // Basic chatbot function for demonstration
         function sendMessage() {
-            const input = document.getElementById('userInput').value;
-            const chatbox = document.getElementById('chatbox');
-            if (input) {
-                const userMessage = document.createElement('div');
-                userMessage.className = 'user-message';
-                userMessage.textContent = input;
-                chatbox.appendChild(userMessage);
-
-                
-                 // Send the message to the server
-                fetch('http://localhost:5000/process', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ message: input }),
-                })
-                .then(response => response.json())
-                .then(data => {
-                    // Display bot response
-                    const botMessage = document.createElement('div');
-                    botMessage.className = 'bot-message';
-                    botMessage.textContent = data.response;
-                    chatbox.appendChild(botMessage);
-
-                    // Clear input box
-                    document.getElementById('userInput').value = '';
-
-                    // Scroll to the bottom
-                    chatbox.scrollTop = chatbox.scrollHeight;
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                });
-            }
+            const message = document.getElementById('userInput').value;
+            fetch('/webhook', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ message })
+            })
+            .then(response => response.json())
+            .then(data => {
+                const messages = document.getElementById('messages');
+                messages.innerHTML += `<p>User: ${message}</p>`;
+                messages.innerHTML += `<p>Bot: ${data.text}</p>`;
+                document.getElementById('userInput').value = '';
+                autoScroll();  // Call auto-scroll function
+            });
         }
+
+        function autoScroll() {
+            const chatboxBody = document.getElementById('chatboxBody');
+            chatboxBody.scrollTop = chatboxBody.scrollHeight;
+        }
+
+        document.getElementById('userInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
     </script>
 </body>
 </html>
