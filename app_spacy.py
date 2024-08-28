@@ -5,7 +5,7 @@ app = Flask(__name__)
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return render_template('index_spacy.html')
 
 @app.route('/webhook', methods=['POST'])
 def webhook():

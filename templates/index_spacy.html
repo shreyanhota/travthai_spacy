@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Travel Companion</title>
+    <!-- Link to the CSS file in the Flask static directory -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles_spacy.css') }}">
+    <!-- Google Fonts link for fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700&family=Indie+Flower&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">AI Travel Companion</div>
+            <div class="social-media">
+                <a href="https://facebook.com" target="_blank">Facebook</a>
+                <a href="https://twitter.com" target="_blank">Twitter</a>
+                <a href="https://instagram.com" target="_blank">Instagram</a>
+            </div>
+        </header>
+
+        <div class="image-container">
+            <!-- Image placed in the foreground, top center -->
+            <img src="https://picsum.photos/536/354" alt="Travel Image">
+        </div>
+
+        <div class="chatbot-container">
+            <div id="chatbot">
+                <div id="chatbox"></div>
+                <input type="text" id="userInput" placeholder="Type your message here..." onkeydown="if(event.key === 'Enter'){sendMessage();}">
+                <button onclick="sendMessage()">Send</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Basic chatbot function for demonstration
+        function sendMessage() {
+            const input = document.getElementById('userInput').value;
+            const chatbox = document.getElementById('chatbox');
+            if (input) {
+                const userMessage = document.createElement('div');
+                userMessage.className = 'user-message';
+                userMessage.textContent = input;
+                chatbox.appendChild(userMessage);
+
+                // Simulate a bot response
+                const botMessage = document.createElement('div');
+                botMessage.className = 'bot-message';
+                botMessage.textContent = "I am a chatbot, how can I help you?";
+                chatbox.appendChild(botMessage);
+
+                document.getElementById('userInput').value = ''; // Clear input box
+                chatbox.scrollTop = chatbox.scrollHeight; // Scroll to the bottom
+            }
+        }
+    </script>
+</body>
+</html>
