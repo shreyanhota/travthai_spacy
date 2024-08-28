@@ -45,14 +45,32 @@
                 userMessage.textContent = input;
                 chatbox.appendChild(userMessage);
 
-                // Simulate a bot response
-                const botMessage = document.createElement('div');
-                botMessage.className = 'bot-message';
-                botMessage.textContent = "I am a chatbot, how can I help you?";
-                chatbox.appendChild(botMessage);
+                
+                 // Send the message to the server
+                fetch('http://localhost:5000/process', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ message: input }),
+                })
+                .then(response => response.json())
+                .then(data => {
+                    // Display bot response
+                    const botMessage = document.createElement('div');
+                    botMessage.className = 'bot-message';
+                    botMessage.textContent = data.response;
+                    chatbox.appendChild(botMessage);
 
-                document.getElementById('userInput').value = ''; // Clear input box
-                chatbox.scrollTop = chatbox.scrollHeight; // Scroll to the bottom
+                    // Clear input box
+                    document.getElementById('userInput').value = '';
+
+                    // Scroll to the bottom
+                    chatbox.scrollTop = chatbox.scrollHeight;
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
             }
         }
     </script>
